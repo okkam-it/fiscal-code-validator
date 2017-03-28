@@ -12,6 +12,7 @@ import java.util.Map;
 
 public class FiscalCodeValidatorTest {
 
+  private static final String CODICE_ISTAT_COMUNI_CSV = "codice-istat-comuni.csv";
   private static FiscalCodeConf conf1;
   private static FiscalCodeConf conf2;
 
@@ -37,7 +38,7 @@ public class FiscalCodeValidatorTest {
 
   @Test
   public void testComuniMapInitialization() throws IOException {
-    String codiciIstatStr = readLocalFile("codice-istat-comuni.csv");
+    String codiciIstatStr = readLocalFile(CODICE_ISTAT_COMUNI_CSV);
     Map<String, List<String>> comuniMap = FiscalCodeValidator.getComuniMap(codiciIstatStr);
     Assert.assertEquals("F205", comuniMap.get("MILANO").get(0));
   }
@@ -49,7 +50,7 @@ public class FiscalCodeValidatorTest {
    */
   @Before
   public void init() throws IOException {
-    String codiciIstatStr = readLocalFile("codice-istat-comuni.csv");
+    String codiciIstatStr = readLocalFile(CODICE_ISTAT_COMUNI_CSV);
     conf1 = FiscalCodeValidator.getFiscalCodeConf(codiciIstatStr, "M", 8, 10, 3, 5, 0, 2);
     conf2 = FiscalCodeValidator.getFiscalCodeConf(codiciIstatStr, "M", 2, 4, 5, 7, 8, 10);
   }

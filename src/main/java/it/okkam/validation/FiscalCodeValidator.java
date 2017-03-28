@@ -342,7 +342,7 @@ public class FiscalCodeValidator {
    * Initialize the FiscalCodeConf.
    * 
    * @param codiciIstatStr
-   *          the CSV containing the town-codIstat mappings
+   *          the string content of the TSV containing CODICE-ISTAT => TOWN mappings
    * @param maleValue
    *          the String denoting a male (e.g. "M", "MALE", etc..)
    * @param yearStart
@@ -372,11 +372,15 @@ public class FiscalCodeValidator {
 
   protected static Map<String, List<String>> getComuniMap(String codiciIstatStr)
       throws IOException {
+    final char fieldDelim = '\t';//cod-istat-comuni file must be a TSV
     Scanner scanner = new Scanner(codiciIstatStr);
     Map<String, List<String>> comuniMap = new HashMap<>();
     while (scanner.hasNextLine()) {
       final String line = scanner.nextLine();
-      final int nomeComuneStart = line.indexOf("\t");
+      if (line.trim().isEmpty()) {
+        continue;
+      }
+      final int nomeComuneStart = line.indexOf(fieldDelim);
       final String codIstat = line.substring(0, nomeComuneStart);
       final String nomeComune = line.substring(nomeComuneStart).trim().toUpperCase();
       if (comuniMap.get(nomeComune) == null) {
