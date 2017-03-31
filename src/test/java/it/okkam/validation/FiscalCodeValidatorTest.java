@@ -82,4 +82,16 @@ public class FiscalCodeValidatorTest {
         "1973-08-30T00:00:00", "ROMA", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70H501N"));
   }
+  
+  @Test
+  public void testAutogenerationOfComuniNamesWhenAccented() {
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+        "1973-08-30T00:00:00", "ROVERÈ DELLA LUNA", "F");
+    Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70H607G"));
+    
+    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+        "1973-08-30T00:00:00", "ROVERE' DELLA LUNA", "F");
+    Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70H607G"));
+  }
+
 }
