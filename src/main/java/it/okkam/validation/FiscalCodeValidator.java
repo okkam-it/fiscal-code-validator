@@ -279,7 +279,7 @@ public class FiscalCodeValidator {
   private static String replaceSpecialChars(String value, String repl) {
     if (value != null) {
       value = StringUtils.stripAccents(value).toUpperCase();
-      return value.replaceAll("[{}, ;\\\\<>\"\'#]", repl);
+      return value.replaceAll("[{}, ;\\\\<>\"\'`#]", repl);
     }
     return "";
   }
