@@ -1,6 +1,7 @@
 package it.okkam.validation;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,5 +74,12 @@ public class FiscalCodeValidatorTest {
     String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "FO", "DARIO",
         "1926-03-24T00:00:00", "SANGIANO", "M");
     Assert.assertTrue(arrayContains(codes, "FOXDRA26C24H872Y"));
+  }
+  
+  @Test
+  public void testBacktick() {
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+        "1973-08-30T00:00:00", "ROMA", "F");
+    Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70H501N"));
   }
 }
