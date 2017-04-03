@@ -16,18 +16,18 @@ public class FiscalCodeValidator {
   private static final char[] VOCALS = new char[] { 'A', 'E', 'I', 'O', 'U' };
 
   private static final String[] ACCENTED_LETTERS = new String[] { //
-      "À", "Á", "Â", "Ä", //
-      "È", "É", "Ê", "Ë", //
-      "Ì", "Í", "Î", "Ï", //
-      "Ò", "Ó", "Ô", "Ö", //
-      "Ù", "Ú", "Û", "Ü" };
+      "À", "Á", "Ä", "Â", //
+      "È", "É", "Ë", "Ê", //
+      "Ì", "Í", "Ï", "Î", //
+      "Ò", "Ó", "Ö", "Ô", //
+      "Ù", "Ú", "Ü", "Û" };
 
   private static final String[] ACCENTED_LETTERS_REPLACEMENT = new String[] { //
-      "A'", "A'", "A'", "A'", //
-      "E'", "E'", "E'", "E'", //
-      "I'", "I'", "I'", "I'", //
-      "O'", "O'", "O'", "O'", //
-      "U'", "U'", "U'", "U'" };
+      "A'", "A'", "A", "A", //
+      "E'", "E'", "E", "E", //
+      "I'", "I'", "I", "I", //
+      "O'", "O'", "O", "O", //
+      "U'", "U'", "U", "U"};
 
   private static final Map<Integer, String> monthValues;
   private static final HashMap<String, Integer> oddSumValues;
@@ -361,6 +361,9 @@ public class FiscalCodeValidator {
    * 
    * @param codiciIstatStr
    *          the string content of the TSV containing CODICE-ISTAT => TOWN mappings
+   * @param maxComuneNameLength
+   *          the max length of the name of a comune (0 to diable generation of truncated version of
+   *          the name)
    * @param maleValue
    *          the String denoting a male (e.g. "M", "MALE", etc..)
    * @param yearStart
@@ -377,19 +380,20 @@ public class FiscalCodeValidator {
    *          day end index
    * @return the corresponding FiscalCodeConf bean
    */
-  public static FiscalCodeConf getFiscalCodeConf(String codiciIstatStr, String maleValue,
-      int yearStart, int yearEnd, int monthStart, int monthEnd, int dayStart, int dayEnd) {
+  public static FiscalCodeConf getFiscalCodeConf(String codiciIstatStr, int maxComuneNameLength,
+      String maleValue, int yearStart, int yearEnd, int monthStart, int monthEnd, int dayStart,
+      int dayEnd) {
     try {
-      return new FiscalCodeConf(getComuniMap(codiciIstatStr), maleValue, yearStart, yearEnd,
-          monthStart, monthEnd, dayStart, dayEnd);
+      return new FiscalCodeConf(getComuniMap(codiciIstatStr, maxComuneNameLength), maleValue,
+          yearStart, yearEnd, monthStart, monthEnd, dayStart, dayEnd);
     } catch (IOException ex) {
       ex.printStackTrace();
     }
     return null;
   }
 
-  protected static Map<String, List<String>> getComuniMap(String codiciIstatStr)
-      throws IOException {
+  protected static Map<String, List<String>> getComuniMap(String codiciIstatStr,
+      int maxComuneNameLength) throws IOException {
     final char fieldDelim = '\t';// cod-istat-comuni file must be a TSV
     Scanner scanner = new Scanner(codiciIstatStr);
     Map<String, List<String>> comuniMap = new HashMap<>();
@@ -401,18 +405,18 @@ public class FiscalCodeValidator {
       final int nomeComuneStart = line.indexOf(fieldDelim);
       final String codIstat = line.substring(0, nomeComuneStart);
       String nomeComune = line.substring(nomeComuneStart).trim().toUpperCase();
-      addToComuniMap(comuniMap, nomeComune, codIstat);
+      addToComuniMap(comuniMap, maxComuneNameLength, nomeComune, codIstat);
       // 1 - add version with apostrophes in place of accented letters
       String normalizedName = null;
       if (StringUtils.indexOfAny(nomeComune, ACCENTED_LETTERS) >= 0) {
         normalizedName = StringUtils.replaceEach(nomeComune, ACCENTED_LETTERS,
             ACCENTED_LETTERS_REPLACEMENT);
-        addToComuniMap(comuniMap, normalizedName, codIstat);
+        addToComuniMap(comuniMap, maxComuneNameLength, normalizedName, codIstat);
       }
-      //2 - replace '-' in both original and normalized
-      addNameWithoutDashes(comuniMap, nomeComune, codIstat);
+      // 2 - replace '-' in both original and normalized
+      addNameWithoutDashes(comuniMap, maxComuneNameLength, nomeComune, codIstat);
       if (normalizedName != null) {
-        addNameWithoutDashes(comuniMap, normalizedName, codIstat);
+        addNameWithoutDashes(comuniMap, maxComuneNameLength, normalizedName, codIstat);
       }
     }
     scanner.close();
@@ -420,17 +424,24 @@ public class FiscalCodeValidator {
   }
 
   private static void addNameWithoutDashes(final Map<String, List<String>> comuniMap,
-      final String nomeComune, final String codIstat) {
+      final int maxComuneNameLength, final String nomeComune, final String codIstat) {
     if (StringUtils.indexOfAny(nomeComune, '-') >= 0) {
-      addToComuniMap(comuniMap, nomeComune.replace('-', ' '), codIstat);
+      addToComuniMap(comuniMap, maxComuneNameLength, nomeComune.replace('-', ' '), codIstat);
     }
   }
 
   private static void addToComuniMap(final Map<String, List<String>> comuniMap,
-      final String nomeComune, final String codIstat) {
+      final int maxComuneNameLength, final String nomeComune, final String codIstat) {
     if (comuniMap.get(nomeComune) == null) {
       comuniMap.put(nomeComune, new ArrayList<>());
     } // else nomeComune has multiple codes;
     comuniMap.get(nomeComune).add(codIstat);
+
+    if (maxComuneNameLength == 0 || nomeComune.length() <= maxComuneNameLength) {
+      return;
+    }
+    //add the truncated version (issue #9) 
+    addToComuniMap(comuniMap, maxComuneNameLength,
+        nomeComune.substring(0, maxComuneNameLength).trim(), codIstat);
   }
 }
