@@ -129,5 +129,15 @@ public class FiscalCodeValidatorTest {
         "1973-08-30T00:00:00", "CALDARO SULLA STRADA DEL", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70B397B"));
   }
+  
+  @Test
+  public void testCircumflexedLetters() {
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
+        "1973-08-30T00:00:00", "CHÂTILLON", "F");
+    Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70C294S"));
+    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
+        "1973-08-30T00:00:00", "CHATILLON", "F");
+    Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70C294S"));
+  }
 
 }

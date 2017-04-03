@@ -16,18 +16,18 @@ public class FiscalCodeValidator {
   private static final char[] VOCALS = new char[] { 'A', 'E', 'I', 'O', 'U' };
 
   private static final String[] ACCENTED_LETTERS = new String[] { //
-      "À", "Á", "Â", "Ä", //
-      "È", "É", "Ê", "Ë", //
-      "Ì", "Í", "Î", "Ï", //
-      "Ò", "Ó", "Ô", "Ö", //
-      "Ù", "Ú", "Û", "Ü" };
+      "À", "Á", "Ä", "Â", //
+      "È", "É", "Ë", "Ê", //
+      "Ì", "Í", "Ï", "Î", //
+      "Ò", "Ó", "Ö", "Ô", //
+      "Ù", "Ú", "Ü", "Û" };
 
   private static final String[] ACCENTED_LETTERS_REPLACEMENT = new String[] { //
-      "A'", "A'", "A'", "A'", //
-      "E'", "E'", "E'", "E'", //
-      "I'", "I'", "I'", "I'", //
-      "O'", "O'", "O'", "O'", //
-      "U'", "U'", "U'", "U'" };
+      "A'", "A'", "A", "A", //
+      "E'", "E'", "E", "E", //
+      "I'", "I'", "I", "I", //
+      "O'", "O'", "O", "O", //
+      "U'", "U'", "U", "U"};
 
   private static final Map<Integer, String> monthValues;
   private static final HashMap<String, Integer> oddSumValues;
