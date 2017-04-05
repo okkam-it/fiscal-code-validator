@@ -8,11 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 public class FiscalCodeValidator {
 
-  private static final String SPECIAL_CHARS_REGEX = "[{}, ;\\\\<>\"\'`#]";
   private static final char[] VOCALS = new char[] { 'A', 'E', 'I', 'O', 'U' };
 
   private static final String[] ACCENTED_LETTERS = new String[] { //
@@ -33,8 +31,6 @@ public class FiscalCodeValidator {
   private static final HashMap<String, Integer> oddSumValues;
   private static final HashMap<String, Integer> evenSumValues;
   private static final HashMap<Integer, String> controlCharValues;
-
-  private static final Pattern specialCharsPattern = Pattern.compile(SPECIAL_CHARS_REGEX);
 
   static {
     monthValues = new HashMap<>();
@@ -179,8 +175,8 @@ public class FiscalCodeValidator {
     if (!paramsOk) {
       return null;
     }
-    surname = replaceSpecialChars(surname, "");
-    name = replaceSpecialChars(name, "");
+    surname = FiscalCodeNormalizer.normalizeName(surname, true);
+    name = FiscalCodeNormalizer.normalizeName(name, true);
     StringBuilder result = new StringBuilder();
     /* calcolo prime 3 lettere */
     int cont = 0;
@@ -292,14 +288,6 @@ public class FiscalCodeValidator {
       ret[i] += calculateControlChar(ret[i]);
     }
     return ret;
-  }
-
-  private static String replaceSpecialChars(String value, String replacement) {
-    if (value != null) {
-      value = StringUtils.stripAccents(value).toUpperCase();
-      return specialCharsPattern.matcher(value).replaceAll(replacement);
-    }
-    return "";
   }
 
   private static boolean checkParamsNotEmpty(String... params) {
