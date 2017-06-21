@@ -350,8 +350,8 @@ public class FiscalCodeValidator {
    * @param codiciIstatStr
    *          the string content of the TSV containing CODICE-ISTAT => TOWN mappings
    * @param maxComuneNameLength
-   *          the max length of the name of a comune (0 to diable generation of truncated version of
-   *          the name)
+   *          the max length of the name of a comune (0 to disable generation of truncated version
+   *          of the name)
    * @param maleValue
    *          the String denoting a male (e.g. "M", "MALE", etc..)
    * @param yearStart
