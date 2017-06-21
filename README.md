@@ -144,7 +144,6 @@ public class FiscalCodeValidatorTest {
         "1926-03-24T00:00:00", "SANGIANO", "M");
     Assert.assertTrue(arrayContains(codes, "FOXDRA26C24H872Y"));
   }
-
 }
 ```
 A minimal set of JUnit tests for fiscal codes validation can be found in the FiscalCodeValidatorTest.java class.
