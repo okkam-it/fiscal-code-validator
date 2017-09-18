@@ -80,6 +80,13 @@ public class FiscalCodeValidatorTest {
   }
   
   @Test
+  public void testDot() {
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "FO", "DAR.IO",
+        "1926-03-24T00:00:00", "SANGIANO", "M");
+    Assert.assertTrue(arrayContains(codes, "FOXDRA26C24H872Y"));
+  }
+  
+  @Test
   public void testBacktick() {
     String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
         "1973-08-30T00:00:00", "ROMA", "F");
@@ -88,44 +95,44 @@ public class FiscalCodeValidatorTest {
   
   @Test
   public void testAutogenerationOfComuniNamesWhenAccented() {
-    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "ROVERÈ DELLA LUNA", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70H607G"));
     
-    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "ROVERE' DELLA LUNA", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70H607G"));
   }
   
   @Test(expected=IllegalArgumentException.class)
   public void testTruncatedComuneNameNotConfigured() {
-    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf3, "D`AMICO", "ILARIA",
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf3, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "MAGRÈ SULLA STRADA DEL VI", "F");
     Assert.assertNotNull(codes);
   }
   
   @Test
   public void testTruncatedComuneName() {
-    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "MAGRÈ SULLA STRADA DEL VINO", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70E829N"));
     //this comune name has lenght 25
-    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "MAGRÈ SULLA STRADA DEL VI", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70E829N"));
     //validate also normalized version
-    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "MAGRE' SULLA STRADA DEL V", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70E829N"));
   }
   
   @Test
   public void testTruncatedComuneNameWithTrim() {
-    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "CALDARO SULLA STRADA DEL VINO", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70B397B"));
     //this comune name has lenght 24 (because of trim)
-    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D`AMICO", "ILARIA",
+    codes = FiscalCodeValidator.calcoloCodiceFiscale(conf2, "D'AMICO", "ILARIA",
         "1973-08-30T00:00:00", "CALDARO SULLA STRADA DEL", "F");
     Assert.assertTrue(ArrayUtils.contains(codes, "DMCLRI73M70B397B"));
   }
