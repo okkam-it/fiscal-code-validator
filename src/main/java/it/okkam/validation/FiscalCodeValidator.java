@@ -11,14 +11,20 @@ import java.util.Scanner;
 
 public class FiscalCodeValidator {
 
-  private static final char[] VOCALS = new char[] { 'A', 'E', 'I', 'O', 'U' };
+  private FiscalCodeValidator() {
+    throw new IllegalStateException("Utility class");
+  }
+
+  private static final String UNSUPPORTED = " unsupported value";
+  private static final String CONTROL = "Control character ";
+  private static final char[] VOCALS = new char[] {'A', 'E', 'I', 'O', 'U'};
 
   private static final String[] ACCENTED_LETTERS = new String[] { //
       "À", "Á", "Ä", "Â", //
       "È", "É", "Ë", "Ê", //
       "Ì", "Í", "Ï", "Î", //
       "Ò", "Ó", "Ö", "Ô", //
-      "Ù", "Ú", "Ü", "Û" };
+      "Ù", "Ú", "Ü", "Û"};
 
   private static final String[] ACCENTED_LETTERS_REPLACEMENT = new String[] { //
       "A'", "A'", "A", "A", //
@@ -155,22 +161,16 @@ public class FiscalCodeValidator {
   /**
    * Calculate valid italian fiscal codes for given data.
    * 
-   * @param conf
-   *          the FiscalCodeConf
-   * @param surname
-   *          person surname
-   * @param name
-   *          person name
-   * @param birthDate
-   *          person birth date (as dd/MM/yyyy)
-   * @param townOfBirth
-   *          person town of birth
-   * @param gender
-   *          person gender
+   * @param conf the FiscalCodeConf
+   * @param surname person surname
+   * @param name person name
+   * @param birthDate person birth date (as dd/MM/yyyy)
+   * @param townOfBirth person town of birth
+   * @param gender person gender
    * @return the list of valid fiscal codes, null if the fiscal code cannot be computed
    */
   public static String[] calcoloCodiceFiscale(FiscalCodeConf conf, String surname, String name,
-      String birthDate, String townOfBirth, String gender) throws IllegalArgumentException {
+      String birthDate, String townOfBirth, String gender) {
     final boolean paramsOk = checkParamsNotEmpty(surname, name, birthDate, townOfBirth, gender);
     if (!paramsOk) {
       return null;
@@ -279,7 +279,7 @@ public class FiscalCodeValidator {
     /* comune nascita */
     List<String> townCodes = conf.getComuniMap().get(townOfBirth.toUpperCase());
     if (townCodes == null) {
-      throw new IllegalArgumentException("Birth town " + townOfBirth + " unsupported");
+      throw new IllegalArgumentException("Birth town " + townOfBirth + UNSUPPORTED);
     }
     /* Carattere di controllo */
     String[] ret = new String[townCodes.size()];
@@ -299,10 +299,10 @@ public class FiscalCodeValidator {
     return true;
   }
 
-  private static String monthCode(int month) throws IllegalArgumentException {
+  private static String monthCode(int month) {
     String code = monthValues.get(month);
     if (code == null) {
-      throw new IllegalArgumentException("Month " + month + " unsupported value");
+      throw new IllegalArgumentException("Month " + month + UNSUPPORTED);
     }
     return code;
   }
@@ -321,8 +321,7 @@ public class FiscalCodeValidator {
     for (int i = 1; i <= 13; i += 2) {
       Integer valueToSum = evenSumValues.get(String.valueOf(result.charAt(i)));
       if (valueToSum == null) {
-        throw new IllegalArgumentException(
-            "Control character " + result.charAt(i) + " unsupported value");
+        throw new IllegalArgumentException(CONTROL + result.charAt(i) + UNSUPPORTED);
       }
       evenSum += valueToSum;
     }
@@ -330,16 +329,14 @@ public class FiscalCodeValidator {
     for (int i = 0; i <= 14; i += 2) {
       Integer valueToSum = oddSumValues.get(String.valueOf(result.charAt(i)));
       if (valueToSum == null) {
-        throw new IllegalArgumentException(
-            "Control character " + result.charAt(i) + " unsupported value");
+        throw new IllegalArgumentException(CONTROL + result.charAt(i) + UNSUPPORTED);
       }
       oddSum += valueToSum;
     }
     int interoControllo = (evenSum + oddSum) % 26;
     String controlChar = controlCharValues.get(interoControllo);
     if (controlChar == null) {
-      throw new IllegalArgumentException(
-          "Control character " + interoControllo + " unsupported value");
+      throw new IllegalArgumentException(CONTROL + interoControllo + UNSUPPORTED);
     }
     return controlChar;
   }
@@ -347,25 +344,16 @@ public class FiscalCodeValidator {
   /**
    * Initialize the FiscalCodeConf.
    * 
-   * @param codiciIstatStr
-   *          the string content of the TSV containing CODICE-ISTAT => TOWN mappings
-   * @param maxComuneNameLength
-   *          the max length of the name of a comune (0 to disable generation of truncated version
-   *          of the name)
-   * @param maleValue
-   *          the String denoting a male (e.g. "M", "MALE", etc..)
-   * @param yearStart
-   *          year start index
-   * @param yearEnd
-   *          year end index
-   * @param monthStart
-   *          month start index
-   * @param monthEnd
-   *          month end index
-   * @param dayStart
-   *          day start index
-   * @param dayEnd
-   *          day end index
+   * @param codiciIstatStr the string content of the TSV containing CODICE-ISTAT => TOWN mappings
+   * @param maxComuneNameLength the max length of the name of a comune (0 to disable generation of
+   *        truncated version of the name)
+   * @param maleValue the String denoting a male (e.g. "M", "MALE", etc..)
+   * @param yearStart year start index
+   * @param yearEnd year end index
+   * @param monthStart month start index
+   * @param monthEnd month end index
+   * @param dayStart day start index
+   * @param dayEnd day end index
    * @return the corresponding FiscalCodeConf bean
    */
   public static FiscalCodeConf getFiscalCodeConf(String codiciIstatStr, int maxComuneNameLength,
@@ -397,8 +385,8 @@ public class FiscalCodeValidator {
       // 1 - add version with apostrophes in place of accented letters
       String normalizedName = null;
       if (StringUtils.indexOfAny(nomeComune, ACCENTED_LETTERS) >= 0) {
-        normalizedName = StringUtils.replaceEach(nomeComune, ACCENTED_LETTERS,
-            ACCENTED_LETTERS_REPLACEMENT);
+        normalizedName =
+            StringUtils.replaceEach(nomeComune, ACCENTED_LETTERS, ACCENTED_LETTERS_REPLACEMENT);
         addToComuniMap(comuniMap, maxComuneNameLength, normalizedName, codIstat);
       }
       // 2 - replace '-' in both original and normalized
@@ -428,7 +416,7 @@ public class FiscalCodeValidator {
     if (maxComuneNameLength == 0 || nomeComune.length() <= maxComuneNameLength) {
       return;
     }
-    //add the truncated version (issue #9) 
+    // add the truncated version (issue #9)
     addToComuniMap(comuniMap, maxComuneNameLength,
         nomeComune.substring(0, maxComuneNameLength).trim(), codIstat);
   }

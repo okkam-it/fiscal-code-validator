@@ -6,6 +6,10 @@ import java.util.regex.Pattern;
 
 public class FiscalCodeNormalizer {
 
+  private FiscalCodeNormalizer() {
+    throw new IllegalStateException("Utility class");
+  }
+
   private static final Pattern NOISY_CHARS = Pattern.compile("[|{}(),.;\\\\<>\"\'`#°\n\r\t]");
   private static final Pattern MULTIPLE_SPACES = Pattern.compile("\\s+");
 
@@ -20,8 +24,7 @@ public class FiscalCodeNormalizer {
       "Ñ", //
       "Š", "ß", //
       "Ž", //
-      "+", "-"
-  };
+      "+", "-"};
 
   private static final String[] LETTERS_REPLACEMENT = new String[] { //
       "A", "A", "A", "A", "AE", "AE", //
@@ -39,10 +42,8 @@ public class FiscalCodeNormalizer {
   /**
    * Normalize the passed name.
    * 
-   * @param name
-   *          the name to normalize
-   * @param stripSpaces
-   *          to remove all spaces, otherwise just remove duplicated spaces and trim
+   * @param name the name to normalize
+   * @param stripSpaces to remove all spaces, otherwise just remove duplicated spaces and trim
    * @return the normalized name
    */
   public static String normalizeName(String name, boolean stripSpaces) {
