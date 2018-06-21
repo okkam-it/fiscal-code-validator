@@ -371,31 +371,31 @@ public class FiscalCodeValidator {
   protected static Map<String, List<String>> getComuniMap(String codiciIstatStr,
       int maxComuneNameLength) throws IOException {
     final char fieldDelim = '\t';// cod-istat-comuni file must be a TSV
-    Scanner scanner = new Scanner(codiciIstatStr);
     Map<String, List<String>> comuniMap = new HashMap<>();
-    while (scanner.hasNextLine()) {
-      final String line = scanner.nextLine();
-      if (line.trim().isEmpty()) {
-        continue;
-      }
-      final int nomeComuneStart = line.indexOf(fieldDelim);
-      final String codIstat = line.substring(0, nomeComuneStart);
-      String nomeComune = line.substring(nomeComuneStart).trim().toUpperCase();
-      addToComuniMap(comuniMap, maxComuneNameLength, nomeComune, codIstat);
-      // 1 - add version with apostrophes in place of accented letters
-      String normalizedName = null;
-      if (StringUtils.indexOfAny(nomeComune, ACCENTED_LETTERS) >= 0) {
-        normalizedName =
-            StringUtils.replaceEach(nomeComune, ACCENTED_LETTERS, ACCENTED_LETTERS_REPLACEMENT);
-        addToComuniMap(comuniMap, maxComuneNameLength, normalizedName, codIstat);
-      }
-      // 2 - replace '-' in both original and normalized
-      addNameWithoutDashes(comuniMap, maxComuneNameLength, nomeComune, codIstat);
-      if (normalizedName != null) {
-        addNameWithoutDashes(comuniMap, maxComuneNameLength, normalizedName, codIstat);
+    try (Scanner scanner = new Scanner(codiciIstatStr)) {
+      while (scanner.hasNextLine()) {
+        final String line = scanner.nextLine();
+        if (line.trim().isEmpty()) {
+          continue;
+        }
+        final int nomeComuneStart = line.indexOf(fieldDelim);
+        final String codIstat = line.substring(0, nomeComuneStart);
+        String nomeComune = line.substring(nomeComuneStart).trim().toUpperCase();
+        addToComuniMap(comuniMap, maxComuneNameLength, nomeComune, codIstat);
+        // 1 - add version with apostrophes in place of accented letters
+        String normalizedName = null;
+        if (StringUtils.indexOfAny(nomeComune, ACCENTED_LETTERS) >= 0) {
+          normalizedName =
+              StringUtils.replaceEach(nomeComune, ACCENTED_LETTERS, ACCENTED_LETTERS_REPLACEMENT);
+          addToComuniMap(comuniMap, maxComuneNameLength, normalizedName, codIstat);
+        }
+        // 2 - replace '-' in both original and normalized
+        addNameWithoutDashes(comuniMap, maxComuneNameLength, nomeComune, codIstat);
+        if (normalizedName != null) {
+          addNameWithoutDashes(comuniMap, maxComuneNameLength, normalizedName, codIstat);
+        }
       }
     }
-    scanner.close();
     return comuniMap;
   }
 
@@ -408,7 +408,7 @@ public class FiscalCodeValidator {
 
   private static void addToComuniMap(final Map<String, List<String>> comuniMap,
       final int maxComuneNameLength, final String nomeComune, final String codIstat) {
-    if (comuniMap.get(nomeComune) == null) {
+    if (!comuniMap.containsKey(nomeComune)) {
       comuniMap.put(nomeComune, new ArrayList<>());
     } // else nomeComune has multiple codes;
     comuniMap.get(nomeComune).add(codIstat);
