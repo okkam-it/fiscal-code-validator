@@ -23,9 +23,9 @@ public class NormalizationTest {
 
     res = FiscalCodeNormalizer.normalizeName("D`AMICO-ILARI.A", false);
     Assert.assertEquals(EXPECTED_NOT_STRIPPED, res);
-    
+
   }
-  
+
   @Test
   public void testPlusAndMinus() {
     String res = FiscalCodeNormalizer.normalizeName("D'AMICO +ILARIA", false);
@@ -33,12 +33,12 @@ public class NormalizationTest {
 
     res = FiscalCodeNormalizer.normalizeName("D'AMICO-ILARIA", false);
     Assert.assertEquals(EXPECTED_NOT_STRIPPED, res);
-    
+
     res = FiscalCodeNormalizer.normalizeName("D'AMICO +ILARIA", false);
     Assert.assertEquals(EXPECTED_NOT_STRIPPED, res);
-    
+
   }
-  
+
   @Test
   public void testTrimAndMultipleSpaces() {
     String res = FiscalCodeNormalizer.normalizeName(" D'AMICO ILARIA ", true);
@@ -47,7 +47,7 @@ public class NormalizationTest {
     res = FiscalCodeNormalizer.normalizeName("D'AMICO  ILARIA    ", false);
     Assert.assertEquals(EXPECTED_NOT_STRIPPED, res);
   }
-  
+
   @Test
   public void testTabs() {
     String res = FiscalCodeNormalizer.normalizeName("D'AMICO     ILARIA", false);
