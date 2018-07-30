@@ -1,13 +1,13 @@
 package it.okkam.validation;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class FiscalCodeValidator {
 
@@ -17,21 +17,21 @@ public class FiscalCodeValidator {
 
   private static final String UNSUPPORTED = " unsupported value";
   private static final String CONTROL = "Control character ";
-  private static final char[] VOCALS = new char[] {'A', 'E', 'I', 'O', 'U'};
+  private static final char[] VOCALS = new char[] { 'A', 'E', 'I', 'O', 'U' };
 
   private static final String[] ACCENTED_LETTERS = new String[] { //
       "À", "Á", "Ä", "Â", //
       "È", "É", "Ë", "Ê", //
       "Ì", "Í", "Ï", "Î", //
       "Ò", "Ó", "Ö", "Ô", //
-      "Ù", "Ú", "Ü", "Û"};
+      "Ù", "Ú", "Ü", "Û" };
 
   private static final String[] ACCENTED_LETTERS_REPLACEMENT = new String[] { //
       "A'", "A'", "A", "A", //
       "E'", "E'", "E", "E", //
       "I'", "I'", "I", "I", //
       "O'", "O'", "O", "O", //
-      "U'", "U'", "U", "U"};
+      "U'", "U'", "U", "U" };
 
   private static final Map<Integer, String> monthValues;
   private static final HashMap<String, Integer> oddSumValues;
