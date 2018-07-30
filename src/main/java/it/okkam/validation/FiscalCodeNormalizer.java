@@ -1,8 +1,8 @@
 package it.okkam.validation;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class FiscalCodeNormalizer {
 
@@ -24,7 +24,7 @@ public class FiscalCodeNormalizer {
       "Ñ", //
       "Š", "ß", //
       "Ž", //
-      "+", "-"};
+      "+", "-" };
 
   private static final String[] LETTERS_REPLACEMENT = new String[] { //
       "A", "A", "A", "A", "AE", "AE", //
