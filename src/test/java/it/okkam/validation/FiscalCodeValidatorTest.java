@@ -69,6 +69,12 @@ public class FiscalCodeValidatorTest {
   }
 
   @Test
+  public void testTwoLetterName() {
+    String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf1, "PARKASH", "MO", "01/04/1965", "INDIA", "M");
+    Assert.assertTrue(arrayContains(codes, "PRKMOX65D01Z222C"));
+  }
+
+  @Test
   public void testDarioFo() {
     String[] codes = FiscalCodeValidator.calcoloCodiceFiscale(conf1, "FO", "DARIO", "24/03/1926",
         "SANGIANO", "M");

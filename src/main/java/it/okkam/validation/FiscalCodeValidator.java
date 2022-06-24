@@ -180,14 +180,6 @@ public class FiscalCodeValidator {
     StringBuilder result = new StringBuilder();
     /* calcolo prime 3 lettere */
     int cont = 0;
-    /* caso cognome minore di 3 lettere */
-    if (surname.length() < 3) {
-      result.append(surname);
-      while (result.length() < 3) {
-        result.append("X");
-      }
-      cont = 3;
-    }
     /* caso normale */
     for (int i = 0; i < surname.length(); i++) {
       if (cont == 3) {
@@ -199,9 +191,9 @@ public class FiscalCodeValidator {
       }
     }
     /* nel caso ci siano meno di 3 consonanti */
-    while (cont < 3) {
+    while (cont < 3 && cont < surname.length()) {
       for (int i = 0; i < surname.length(); i++) {
-        if (cont == 3) {
+        if (cont == 3 || cont == surname.length()) {
           break;
         }
         if (isVocal(surname.charAt(i))) {
@@ -210,16 +202,14 @@ public class FiscalCodeValidator {
         }
       }
     }
-    /* lettere nome */
-    cont = 0;
-    /* caso nome minore di 3 lettere */
-    if (name.length() < 3) {
-      result.append(name);
-      while (result.length() < 6) {
+    /* caso cognome minore di 3 lettere */
+    if (surname.length() < 3) {
+      while (result.length() < 3) {
         result.append("X");
       }
-      cont = 3;
     }
+    /* lettere nome */
+    cont = 0;
     int consonantCount = 0;
     for (int i = 0; i < name.length(); i++) {
       if (!isVocal(name.charAt(i))) {
@@ -242,15 +232,21 @@ public class FiscalCodeValidator {
       }
     }
     /* nel casoci siano meno di 3 consonanti */
-    while (cont < 3) {
+    while (cont < 3 && cont < name.length()) {
       for (int i = 0; i < name.length(); i++) {
-        if (cont == 3) {
+        if (cont == 3 || cont == name.length()) {
           break;
         }
         if (isVocal(name.charAt(i))) {
           result.append(Character.toString(name.charAt(i)));
           cont++;
         }
+      }
+    }
+    /* caso nome minore di 3 lettere */
+    if (name.length() < 3) {
+      while (result.length() < 6) {
+        result.append("X");
       }
     }
     result.append(birthDate.substring(conf.getYearStart(), conf.getYearEnd()));
