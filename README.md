@@ -1,6 +1,17 @@
 # Italian Fiscal Code Validator
 
 The Italian fiscal code, officially known as Italy’s Codice Fiscale, is an alphanumeric code of 16 characters. The code aims at identifying unambiguously people residing in Italy and it is used for several purposes, e.g. uniquely identifying individuals in the health system, or natural persons who act as parties in private contracts. For natural persons, the fiscal code is made of 16 alphanumeric characters; for legal persons (e.g. corporations) it comprises 11 numeric-only characters (i.e. VAT number that is not taken into account here).
+### Usage
+
+Use the following dependency from Maven Central in your pom.xml:
+
+```
+<dependency>
+    <groupId>org.okkam</groupId>
+    <artifactId>fiscal-code-validator</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ### Description:
 
