@@ -1,14 +1,14 @@
 package it.okkam.validation;
 
 import java.util.regex.Pattern;
-
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Fiscal code normalizer.
+ */
+@UtilityClass
 public class FiscalCodeNormalizer {
-
-  private FiscalCodeNormalizer() {
-    throw new IllegalStateException("Utility class");
-  }
 
   private static final Pattern NOISY_CHARS = Pattern.compile("[|{}(),.;\\\\<>\"\'`#°\n\r\t]");
   private static final Pattern MULTIPLE_SPACES = Pattern.compile("\\s+");
@@ -41,7 +41,7 @@ public class FiscalCodeNormalizer {
 
   /**
    * Normalize the passed name.
-   * 
+   *
    * @param name the name to normalize
    * @param stripSpaces to remove all spaces, otherwise just remove duplicated spaces and trim
    * @return the normalized name

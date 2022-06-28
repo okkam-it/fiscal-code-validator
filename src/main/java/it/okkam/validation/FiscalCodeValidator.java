@@ -1,19 +1,18 @@
 package it.okkam.validation;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * Fiscal code validator main class.
+ */
+@UtilityClass
 public class FiscalCodeValidator {
-
-  private FiscalCodeValidator() {
-    throw new IllegalStateException("Utility class");
-  }
 
   private static final String UNSUPPORTED = " unsupported value";
   private static final String CONTROL = "Control character ";
@@ -160,7 +159,7 @@ public class FiscalCodeValidator {
 
   /**
    * Calculate valid italian fiscal codes for given data.
-   * 
+   *
    * @param conf the FiscalCodeConf
    * @param surname person surname
    * @param name person name
@@ -178,9 +177,9 @@ public class FiscalCodeValidator {
     surname = FiscalCodeNormalizer.normalizeName(surname, true);
     name = FiscalCodeNormalizer.normalizeName(name, true);
     StringBuilder result = new StringBuilder();
-    /* calcolo prime 3 lettere */
+    /* Computation of 1-3 chars ------> LAST NAME */
     int cont = 0;
-    /* caso normale */
+    /* Ordinary case */
     for (int i = 0; i < surname.length(); i++) {
       if (cont == 3) {
         break;
@@ -190,7 +189,7 @@ public class FiscalCodeValidator {
         cont++;
       }
     }
-    /* nel caso ci siano meno di 3 consonanti */
+    /* When there are less than 3 consonants in the last name */
     while (cont < 3 && cont < surname.length()) {
       for (int i = 0; i < surname.length(); i++) {
         if (cont == 3 || cont == surname.length()) {
@@ -202,13 +201,14 @@ public class FiscalCodeValidator {
         }
       }
     }
-    /* caso cognome minore di 3 lettere */
+    /* When there are less than 3 letters in the last name */
     if (surname.length() < 3) {
       while (result.length() < 3) {
         result.append("X");
       }
     }
-    /* lettere nome */
+
+    /* Computation of 4-6 chars ------> FIRST NAME */
     cont = 0;
     int consonantCount = 0;
     for (int i = 0; i < name.length(); i++) {
@@ -216,8 +216,7 @@ public class FiscalCodeValidator {
         consonantCount++;
       }
     }
-
-    /* caso normale */
+    /* Ordinary case */
     int consonantFound = 0;
     for (int i = 0; i < name.length(); i++) {
       if (cont == 3) {
@@ -231,7 +230,7 @@ public class FiscalCodeValidator {
         consonantFound++;
       }
     }
-    /* nel casoci siano meno di 3 consonanti */
+    /* When there are less than 3 consonants in the first name */
     while (cont < 3 && cont < name.length()) {
       for (int i = 0; i < name.length(); i++) {
         if (cont == 3 || cont == name.length()) {
@@ -243,7 +242,7 @@ public class FiscalCodeValidator {
         }
       }
     }
-    /* caso nome minore di 3 lettere */
+    /* When there are less than 3 letters in the first name */
     if (name.length() < 3) {
       while (result.length() < 6) {
         result.append("X");
@@ -272,12 +271,12 @@ public class FiscalCodeValidator {
       result.append(Integer.toString(day));
     }
 
-    /* comune nascita */
+    /* Birthplace */
     List<String> townCodes = conf.getComuniMap().get(townOfBirth.toUpperCase());
     if (townCodes == null) {
       throw new IllegalArgumentException("Birth town " + townOfBirth + UNSUPPORTED);
     }
-    /* Carattere di controllo */
+    /* Character of control */
     String[] ret = new String[townCodes.size()];
     for (int i = 0; i < ret.length; i++) {
       ret[i] = result + townCodes.get(i);
@@ -339,7 +338,7 @@ public class FiscalCodeValidator {
 
   /**
    * Initialize the FiscalCodeConf.
-   * 
+   *
    * @param codiciIstatStr the string content of the TSV containing CODICE-ISTAT => TOWN mappings
    * @param maxComuneNameLength the max length of the name of a comune (0 to disable generation of
    *        truncated version of the name)
@@ -355,18 +354,13 @@ public class FiscalCodeValidator {
   public static FiscalCodeConf getFiscalCodeConf(String codiciIstatStr, int maxComuneNameLength,
       String maleValue, int yearStart, int yearEnd, int monthStart, int monthEnd, int dayStart,
       int dayEnd) {
-    try {
-      return new FiscalCodeConf(getComuniMap(codiciIstatStr, maxComuneNameLength), maleValue,
+    return new FiscalCodeConf(getComuniMap(codiciIstatStr, maxComuneNameLength), maleValue,
           yearStart, yearEnd, monthStart, monthEnd, dayStart, dayEnd);
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
-    return null;
   }
 
   protected static Map<String, List<String>> getComuniMap(String codiciIstatStr,
-      int maxComuneNameLength) throws IOException {
-    final char fieldDelim = '\t';// cod-istat-comuni file must be a TSV
+      int maxComuneNameLength) {
+    final char fieldDelim = '\t'; // cod-istat-comuni file must be a TSV
     Map<String, List<String>> comuniMap = new HashMap<>();
     try (Scanner scanner = new Scanner(codiciIstatStr)) {
       while (scanner.hasNextLine()) {

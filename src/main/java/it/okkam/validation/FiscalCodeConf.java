@@ -3,7 +3,14 @@ package it.okkam.validation;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
+/**
+ * Configuration class.
+ */
+@Getter
+@Setter
 public class FiscalCodeConf implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -22,7 +29,7 @@ public class FiscalCodeConf implements Serializable {
 
   /**
    * Config.
-   * 
+   *
    * @param comuniMap comuniMap
    * @param maleValue male value
    * @param yearStart year start index
@@ -42,38 +49,6 @@ public class FiscalCodeConf implements Serializable {
     this.monthEnd = monthEnd;
     this.dayStart = dayStart;
     this.dayEnd = dayEnd;
-  }
-
-  public Map<String, List<String>> getComuniMap() {
-    return comuniMap;
-  }
-
-  public String getMaleValue() {
-    return maleValue;
-  }
-
-  public int getYearStart() {
-    return yearStart;
-  }
-
-  public int getYearEnd() {
-    return yearEnd;
-  }
-
-  public int getMonthStart() {
-    return monthStart;
-  }
-
-  public int getMonthEnd() {
-    return monthEnd;
-  }
-
-  public int getDayStart() {
-    return dayStart;
-  }
-
-  public int getDayEnd() {
-    return dayEnd;
   }
 
 }
